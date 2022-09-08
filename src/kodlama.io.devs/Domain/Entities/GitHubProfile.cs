@@ -2,19 +2,21 @@
 
 namespace Domain.Entities;
 
-public class UserGitHub : Entity
+public class GitHubProfile : Entity
 {
-    public int UserId { get; set; }
-    public string GithubAddress { get; set; } = null!;
+    public int DeveloperId { get; set; }
+    public string GitHubAddress { get; set; } = null!;
 
-    public UserGitHub()
+    public virtual Developer Developer { get; set; }
+
+    public GitHubProfile()
     {
     }
 
-    public UserGitHub(int id, int userId, string githubAddress)
+    public GitHubProfile(int id, int developerId, string gitHubAddress) : this()
     {
         Id = id;
-        UserId = userId;
-        GithubAddress = githubAddress;
+        DeveloperId = developerId;
+        GitHubAddress = gitHubAddress;
     }
 }

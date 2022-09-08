@@ -17,6 +17,9 @@ public static class ServiceRegistration
 
         services.AddScoped<IProgrammingLanguageRepository, ProgrammingLanguageRepository>();
         services.AddScoped<ITechnologyRepository, TechnologyRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IGitHubProfileRepository, GitHubProfileRepository>();
+        services.AddScoped<IDeveloperRepository, DeveloperRepository>();
 
         return services;
     }

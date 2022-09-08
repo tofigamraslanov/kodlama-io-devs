@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Features\GitHubProfiles\Commands\DeleteGitHubProfile\" />
+      <Folder Include="Features\GitHubProfiles\Commands\UpdateGitHubProfile\" />
+      <Folder Include="Features\GitHubProfiles\Models" />
+      <Folder Include="Features\GitHubProfiles\Queries\GetListGitHubProfile\" />
+      <Folder Include="Features\GitHubProfiles\Rules" />
       <Folder Include="Features\ProgrammingLanguages\Commands\DeleteProgrammingLanguage\" />
       <Folder Include="Features\ProgrammingLanguages\Commands\UpdateProgrammingLanguage\" />
       <Folder Include="Features\ProgrammingLanguages\Models" />

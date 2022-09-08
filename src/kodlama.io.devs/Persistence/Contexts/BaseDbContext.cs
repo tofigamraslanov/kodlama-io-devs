@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Core.Security.Entities;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,13 @@ public class BaseDbContext : DbContext
 
     public DbSet<ProgrammingLanguage> ProgrammingLanguages { get; set; } = null!;
     public DbSet<Technology> Technologies { get; set; } = null!;
+    public DbSet<Developer> Developers { get; set; } = null!;
+    public DbSet<GitHubProfile> GitHubProfiles { get; set; } = null!;
+
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<OperationClaim> OperationClaims { get; set; } = null!;
+    public DbSet<UserOperationClaim> UserOperationClaims { get; set; } = null!;
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -26,7 +34,7 @@ public class BaseDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
+        
         ProgrammingLanguage[] programmingLanguageSeeds =
         {
             new(1, "C#"),

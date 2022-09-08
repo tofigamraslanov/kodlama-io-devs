@@ -1,6 +1,13 @@
-﻿namespace Persistence.Repositories;
+﻿using Application.Services.Repositories;
+using Core.Persistence.Repositories;
+using Domain.Entities;
+using Persistence.Contexts;
 
-public class GitHubProfileRepository
+namespace Persistence.Repositories;
+
+public class GitHubProfileRepository : EfRepositoryBase<GitHubProfile, BaseDbContext>, IGitHubProfileRepository
 {
-    
+    public GitHubProfileRepository(BaseDbContext context) : base(context)
+    {
+    }
 }

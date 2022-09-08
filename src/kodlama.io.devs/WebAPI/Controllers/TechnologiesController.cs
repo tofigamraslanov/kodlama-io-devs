@@ -13,7 +13,7 @@ namespace WebAPI.Controllers
     public class TechnologiesController : BaseController
     {
         [HttpPost]
-        public async Task<IActionResult> Create(CreateTechnologyCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateTechnologyCommand command)
         {
             CreatedTechnologyDto result = await Mediator?.Send(command)!;
             return Created("", result);
