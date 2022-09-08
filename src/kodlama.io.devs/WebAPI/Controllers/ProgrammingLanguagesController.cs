@@ -15,39 +15,37 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProgrammingLanguageCommand command)
         {
-            CreatedProgrammingLanguageDto response = await Mediator?.Send(command)!;
-            return Created("", response);
+            CreatedProgrammingLanguageDto result = await Mediator?.Send(command)!;
+            return Created("", result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
         {
-            GetListProgrammingLanguageQuery query = new() { PageRequest = pageRequest };
-
-            ProgrammingLanguageListModel listModel = await Mediator?.Send(query)!;
-
-            return Ok(listModel);
+            GetListProgrammingLanguageQuery query = new(pageRequest);
+            ProgrammingLanguageListModel result = await Mediator?.Send(query)!;
+            return Ok(result);
         }
 
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetById([FromRoute] GetByIdProgrammingLanguageQuery query)
         {
-            ProgrammingLanguageGetByIdDto response = await Mediator?.Send(query)!;
-            return Ok(response);
+            ProgrammingLanguageGetByIdDto result = await Mediator?.Send(query)!;
+            return Ok(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateProgrammingLanguageCommand command)
         {
-            UpdatedProgrammingLanguageDto response = await Mediator?.Send(command)!;
-            return Ok(response);
+            UpdatedProgrammingLanguageDto result = await Mediator?.Send(command)!;
+            return Ok(result);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] DeleteProgrammingLanguageCommand command)
         {
-            DeletedProgrammingLanguageDto response = await Mediator?.Send(command)!;
-            return Ok(response);
+            DeletedProgrammingLanguageDto result = await Mediator?.Send(command)!;
+            return Ok(result);
         }
     }
 }

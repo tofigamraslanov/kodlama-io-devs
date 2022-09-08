@@ -7,33 +7,38 @@ using MediatR;
 
 namespace Application.Features.ProgrammingLanguages.Commands.CreateProgrammingLanguage;
 
-public class CreateProgrammingLanguageCommand : IRequest<CreatedProgrammingLanguageDto>
+public record CreateProgrammingLanguageCommand(string Name) : IRequest<CreatedProgrammingLanguageDto>;
+
+public class
+    CreateProgrammingLanguageCommandHandler : IRequestHandler<CreateProgrammingLanguageCommand,
+        CreatedProgrammingLanguageDto>
 {
-    public string Name { get; set; } = null!;
+    private readonly IProgrammingLanguageRepository _repository;
+    private readonly IMapper _mapper;
+    private readonly ProgrammingLanguageBusinessRules _businessRules;
 
-    public class CreateProgrammingLanguageCommandHandler : IRequestHandler<CreateProgrammingLanguageCommand, CreatedProgrammingLanguageDto>
+    public CreateProgrammingLanguageCommandHandler(IProgrammingLanguageRepository repository,
+        IMapper mapper,
+        ProgrammingLanguageBusinessRules businessRules)
     {
-        private readonly IProgrammingLanguageRepository _programmingLanguageRepository;
-        private readonly IMapper _mapper;
-        private readonly ProgrammingLanguageBusinessRules _programmingLanguageBusinessRules;
+        _repository = repository;
+        _mapper = mapper;
+        _businessRules = businessRules;
+    }
 
-        public CreateProgrammingLanguageCommandHandler(IProgrammingLanguageRepository programmingLanguageRepository, IMapper mapper,
-            ProgrammingLanguageBusinessRules programmingLanguageBusinessRules)
-        {
-            _programmingLanguageRepository = programmingLanguageRepository;
-            _mapper = mapper;
-            _programmingLanguageBusinessRules = programmingLanguageBusinessRules;
-        }
+    public async Task<CreatedProgrammingLanguageDto> Handle(CreateProgrammingLanguageCommand request,
+        CancellationToken cancellationToken)
+    {
+        await _businessRules.ProgrammingLanguageNameCanNotBeDuplicatedWhenInserted(request.Name);
 
-        public async Task<CreatedProgrammingLanguageDto> Handle(CreateProgrammingLanguageCommand request, CancellationToken cancellationToken)
-        {
-            await _programmingLanguageBusinessRules.ProgrammingLanguageNameCanNotBeDuplicatedWhenInserted(request.Name);
+        ProgrammingLanguage mappedProgrammingLanguage = _mapper.Map<ProgrammingLanguage>(request);
 
-            ProgrammingLanguage mappedProgrammingLanguage = _mapper.Map<ProgrammingLanguage>(request);
-            ProgrammingLanguage createdProgrammingLanguage = await _programmingLanguageRepository.AddAsync(mappedProgrammingLanguage);
-            CreatedProgrammingLanguageDto createdProgrammingLanguageDto = _mapper.Map<CreatedProgrammingLanguageDto>(createdProgrammingLanguage);
+        ProgrammingLanguage createdProgrammingLanguage =
+            await _repository.AddAsync(mappedProgrammingLanguage);
 
-            return createdProgrammingLanguageDto;
-        }
+        CreatedProgrammingLanguageDto createdProgrammingLanguageDto =
+            _mapper.Map<CreatedProgrammingLanguageDto>(createdProgrammingLanguage);
+
+        return createdProgrammingLanguageDto;
     }
 }

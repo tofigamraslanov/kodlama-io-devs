@@ -9,12 +9,14 @@ namespace Persistence;
 
 public static class ServiceRegistration
 {
-    public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPersistenceServices(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddDbContext<BaseDbContext>(
             options => options.UseSqlServer(configuration.GetConnectionString("ProgrammingLanguageConnectionString")));
 
         services.AddScoped<IProgrammingLanguageRepository, ProgrammingLanguageRepository>();
+        services.AddScoped<ITechnologyRepository, TechnologyRepository>();
 
         return services;
     }

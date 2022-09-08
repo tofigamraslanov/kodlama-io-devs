@@ -12,6 +12,13 @@
       <Folder Include="Features\ProgrammingLanguages\Models" />
       <Folder Include="Features\ProgrammingLanguages\Queries\GetListProgrammingLanguage\" />
       <Folder Include="Features\ProgrammingLanguages\Queries\GetByIdProgrammingLanguage\" />
+      <Folder Include="Features\Technologies\Commands\DeleteTechnology\" />
+      <Folder Include="Features\Technologies\Commands\UpdateTechnology\" />
+      <Folder Include="Features\Technologies\Models\" />
+      <Folder Include="Features\Technologies\Profiles\" />
+      <Folder Include="Features\Technologies\Queries\GetListTechnology\" />
+      <Folder Include="Features\Technologies\Queries\GetByIdTechnology\" />
+      <Folder Include="Features\Technologies\Rules\" />
     </ItemGroup>
 
     <ItemGroup>

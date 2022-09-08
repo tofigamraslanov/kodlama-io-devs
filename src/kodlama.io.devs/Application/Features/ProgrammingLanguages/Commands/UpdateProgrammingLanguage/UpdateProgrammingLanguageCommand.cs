@@ -7,43 +7,39 @@ using MediatR;
 
 namespace Application.Features.ProgrammingLanguages.Commands.UpdateProgrammingLanguage;
 
-public class UpdateProgrammingLanguageCommand : IRequest<UpdatedProgrammingLanguageDto>
+public record UpdateProgrammingLanguageCommand(int Id, string Name) : IRequest<UpdatedProgrammingLanguageDto>;
+
+public class UpdateProgrammingLanguageCommandHandler : IRequestHandler<UpdateProgrammingLanguageCommand,
+    UpdatedProgrammingLanguageDto>
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = null!;
+    private readonly IProgrammingLanguageRepository _repository;
+    private readonly IMapper _mapper;
+    private readonly ProgrammingLanguageBusinessRules _businessRules;
 
-    public class UpdateProgrammingLanguageCommandHandler : IRequestHandler<UpdateProgrammingLanguageCommand,
-        UpdatedProgrammingLanguageDto>
+    public UpdateProgrammingLanguageCommandHandler(IProgrammingLanguageRepository repository, IMapper mapper,
+        ProgrammingLanguageBusinessRules businessRules)
     {
-        private readonly IProgrammingLanguageRepository _repository;
-        private readonly IMapper _mapper;
-        private readonly ProgrammingLanguageBusinessRules _businessRules;
+        _repository = repository;
+        _mapper = mapper;
+        _businessRules = businessRules;
+    }
 
-        public UpdateProgrammingLanguageCommandHandler(IProgrammingLanguageRepository repository, IMapper mapper,
-            ProgrammingLanguageBusinessRules businessRules)
-        {
-            _repository = repository;
-            _mapper = mapper;
-            _businessRules = businessRules;
-        }
+    public async Task<UpdatedProgrammingLanguageDto> Handle(UpdateProgrammingLanguageCommand request,
+        CancellationToken cancellationToken)
+    {
+        ProgrammingLanguage? programmingLanguage = await _repository.GetAsync(l => l.Id == request.Id);
 
-        public async Task<UpdatedProgrammingLanguageDto> Handle(UpdateProgrammingLanguageCommand request,
-            CancellationToken cancellationToken)
-        {
-            ProgrammingLanguage? programmingLanguage = await _repository.GetAsync(l => l.Id == request.Id);
+        _businessRules.ProgrammingLanguageShouldBeExistWhenRequested(programmingLanguage);
 
-            _businessRules.ProgrammingLanguageShouldBeExistWhenRequested(programmingLanguage);
+        programmingLanguage!.Name = request.Name;
 
-            programmingLanguage!.Name = request.Name;
+        await _businessRules.ProgrammingLanguageNameCanNotBeDuplicatedWhenInserted(programmingLanguage.Name);
 
-            await _businessRules.ProgrammingLanguageNameCanNotBeDuplicatedWhenInserted(programmingLanguage.Name);
+        ProgrammingLanguage updatedProgrammingLanguage = await _repository.UpdateAsync(programmingLanguage);
 
-            ProgrammingLanguage updatedProgrammingLanguage = await _repository.UpdateAsync(programmingLanguage);
+        UpdatedProgrammingLanguageDto updatedProgrammingLanguageDto =
+            _mapper.Map<UpdatedProgrammingLanguageDto>(updatedProgrammingLanguage);
 
-            UpdatedProgrammingLanguageDto updatedDto =
-                _mapper.Map<UpdatedProgrammingLanguageDto>(updatedProgrammingLanguage);
-
-            return updatedDto;
-        }
+        return updatedProgrammingLanguageDto;
     }
 }

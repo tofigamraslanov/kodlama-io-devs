@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Reflection;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -14,6 +15,7 @@ public class BaseDbContext : DbContext
     }
 
     public DbSet<ProgrammingLanguage> ProgrammingLanguages { get; set; } = null!;
+    public DbSet<Technology> Technologies { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -23,14 +25,21 @@ public class BaseDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ProgrammingLanguage>(l =>
-        {
-            l.ToTable("ProgrammingLanguages").HasKey(k => k.Id);
-            l.Property(p => p.Id).HasColumnName("Id");
-            l.Property(p => p.Name).HasColumnName("Name");
-        });
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        ProgrammingLanguage[] programmingLanguageSeeds = { new(1, "C#"), new(2, "Java") };
+        ProgrammingLanguage[] programmingLanguageSeeds =
+        {
+            new(1, "C#"),
+            new(2, "Java")
+        };
         modelBuilder.Entity<ProgrammingLanguage>().HasData(programmingLanguageSeeds);
+
+        Technology[] technologySeeds =
+        {
+            new(1, 1, "Wpf"),
+            new(2, 1, "Asp.Net Core"),
+            new(3, 2, "Spring")
+        };
+        modelBuilder.Entity<Technology>().HasData(technologySeeds);
     }
 }

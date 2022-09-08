@@ -7,39 +7,36 @@ using MediatR;
 
 namespace Application.Features.ProgrammingLanguages.Commands.DeleteProgrammingLanguage;
 
-public class DeleteProgrammingLanguageCommand : IRequest<DeletedProgrammingLanguageDto>
+public record DeleteProgrammingLanguageCommand(int Id) : IRequest<DeletedProgrammingLanguageDto>;
+
+public class
+    DeleteProgrammingLanguageCommandHandler : IRequestHandler<DeleteProgrammingLanguageCommand,
+        DeletedProgrammingLanguageDto>
 {
-    public int Id { get; set; }
+    private readonly IProgrammingLanguageRepository _repository;
+    private readonly IMapper _mapper;
+    private readonly ProgrammingLanguageBusinessRules _businessRules;
 
-    public class
-        DeleteProgrammingLanguageCommandHandler : IRequestHandler<DeleteProgrammingLanguageCommand,
-            DeletedProgrammingLanguageDto>
+    public DeleteProgrammingLanguageCommandHandler(IProgrammingLanguageRepository repository, IMapper mapper,
+        ProgrammingLanguageBusinessRules businessRules)
     {
-        private readonly IProgrammingLanguageRepository _repository;
-        private readonly IMapper _mapper;
-        private readonly ProgrammingLanguageBusinessRules _businessRules;
+        _repository = repository;
+        _mapper = mapper;
+        _businessRules = businessRules;
+    }
 
-        public DeleteProgrammingLanguageCommandHandler(IProgrammingLanguageRepository repository, IMapper mapper,
-            ProgrammingLanguageBusinessRules businessRules)
-        {
-            _repository = repository;
-            _mapper = mapper;
-            _businessRules = businessRules;
-        }
+    public async Task<DeletedProgrammingLanguageDto> Handle(DeleteProgrammingLanguageCommand request,
+        CancellationToken cancellationToken)
+    {
+        ProgrammingLanguage? programmingLanguage = await _repository.GetAsync(l => l.Id == request.Id);
 
-        public async Task<DeletedProgrammingLanguageDto> Handle(DeleteProgrammingLanguageCommand request,
-            CancellationToken cancellationToken)
-        {
-            ProgrammingLanguage? programmingLanguage = await _repository.GetAsync(l => l.Id == request.Id);
+        _businessRules.ProgrammingLanguageShouldBeExistWhenRequested(programmingLanguage);
 
-            _businessRules.ProgrammingLanguageShouldBeExistWhenRequested(programmingLanguage);
+        ProgrammingLanguage deletedProgrammingLanguage = await _repository.DeleteAsync(programmingLanguage!);
 
-            ProgrammingLanguage deletedProgrammingLanguage = await _repository.DeleteAsync(programmingLanguage!);
+        DeletedProgrammingLanguageDto deletedProgrammingLanguageDto =
+            _mapper.Map<DeletedProgrammingLanguageDto>(deletedProgrammingLanguage);
 
-            DeletedProgrammingLanguageDto mappedDto =
-                _mapper.Map<DeletedProgrammingLanguageDto>(deletedProgrammingLanguage);
-
-            return mappedDto;
-        }
+        return deletedProgrammingLanguageDto;
     }
 }
