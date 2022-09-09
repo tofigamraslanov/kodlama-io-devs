@@ -1,4 +1,5 @@
 ﻿using Application.Features.GitHubProfiles.Dtos;
+using Application.Features.GitHubProfiles.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
@@ -12,15 +13,19 @@ public class CreateGitHubProfileCommandHandler : IRequestHandler<CreateGitHubPro
 {
     private readonly IGitHubProfileRepository _repository;
     private readonly IMapper _mapper;
-
-    public CreateGitHubProfileCommandHandler(IGitHubProfileRepository repository, IMapper mapper)
+    private readonly GitHubProfileBusinessRules _businessRules;
+    
+    public CreateGitHubProfileCommandHandler(IGitHubProfileRepository repository, IMapper mapper, GitHubProfileBusinessRules businessRules)
     {
         _repository = repository;
         _mapper = mapper;
+        _businessRules = businessRules;
     }
 
     public async Task<CreatedGitHubProfileDto> Handle(CreateGitHubProfileCommand request, CancellationToken cancellationToken)
     {
+        await _businessRules.TechnologyNameCanNotBeDuplicatedWhenInserted(request.GitHubAddress);
+            
         GitHubProfile gitHubProfile = _mapper.Map<GitHubProfile>(request);
 
         GitHubProfile createdGithubProfile = await _repository.AddAsync(gitHubProfile);

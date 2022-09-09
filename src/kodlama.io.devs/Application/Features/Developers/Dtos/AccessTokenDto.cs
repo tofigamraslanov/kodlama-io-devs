@@ -1,6 +1,6 @@
 ﻿using Core.Security.JWT;
 
-namespace Application.Features.Users.Dtos;
+namespace Application.Features.Developers.Dtos;
 
 public class AccessTokenDto
 {

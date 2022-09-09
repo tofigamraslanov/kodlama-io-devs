@@ -1,4 +1,5 @@
 ﻿using Application.Features.GitHubProfiles.Dtos;
+using Application.Features.GitHubProfiles.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
@@ -13,11 +14,13 @@ public class DeleteGitHubProfileCommandHandler : IRequestHandler<DeleteGitHubPro
 {
     private readonly IGitHubProfileRepository _repository;
     private readonly IMapper _mapper;
-
-    public DeleteGitHubProfileCommandHandler(IGitHubProfileRepository repository, IMapper mapper)
+    private readonly GitHubProfileBusinessRules _businessRules;
+    
+    public DeleteGitHubProfileCommandHandler(IGitHubProfileRepository repository, IMapper mapper, GitHubProfileBusinessRules businessRules)
     {
         _repository = repository;
         _mapper = mapper;
+        _businessRules = businessRules;
     }
 
     public async Task<DeletedGitHubProfileDto> Handle(DeleteGitHubProfileCommand request,
@@ -25,6 +28,8 @@ public class DeleteGitHubProfileCommandHandler : IRequestHandler<DeleteGitHubPro
     {
         GitHubProfile? gitHubProfile = await _repository.GetAsync(p => p.Id == request.Id);
 
+        _businessRules.GitHubProfileShouldExistWhenRequested(gitHubProfile);
+        
         GitHubProfile deletedGitHubProfile = await _repository.DeleteAsync(gitHubProfile!);
 
         DeletedGitHubProfileDto deletedGitHubProfileDto = _mapper.Map<DeletedGitHubProfileDto>(deletedGitHubProfile);

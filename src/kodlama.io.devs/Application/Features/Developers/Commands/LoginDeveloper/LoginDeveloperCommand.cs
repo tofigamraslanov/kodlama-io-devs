@@ -1,9 +1,12 @@
-﻿using Application.Features.Users.Dtos;
+﻿using Application.Features.Developers.Dtos;
+using Application.Features.Developers.Rules;
 using Application.Services.Repositories;
+using AutoMapper;
 using Core.Security.Dtos;
 using Core.Security.Entities;
 using Core.Security.Hashing;
 using Core.Security.JWT;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Developers.Commands.LoginDeveloper;
@@ -12,27 +15,31 @@ public record LoginDeveloperCommand(UserForLoginDto UserForLoginDto) : IRequest<
 
 public class LoginDeveloperCommandHandler : IRequestHandler<LoginDeveloperCommand, AccessTokenDto>
 {
-    private readonly IUserRepository _repository;
+    private readonly IDeveloperRepository _repository;
     private readonly ITokenHelper _tokenHelper;
+    private readonly DeveloperBusinessRules _businessRules;
+    private readonly IMapper _mapper;
 
-    public LoginDeveloperCommandHandler(IUserRepository repository, ITokenHelper tokenHelper)
+    public LoginDeveloperCommandHandler(IDeveloperRepository repository, ITokenHelper tokenHelper, DeveloperBusinessRules businessRules,
+        IMapper mapper)
     {
         _repository = repository;
         _tokenHelper = tokenHelper;
+        _businessRules = businessRules;
+        _mapper = mapper;
     }
 
     public async Task<AccessTokenDto> Handle(LoginDeveloperCommand request, CancellationToken cancellationToken)
     {
-        User? user = await _repository.GetAsync(u => u.Email == request.UserForLoginDto.Email);
+        Developer? developer = await _repository.GetAsync(u => u.Email == request.UserForLoginDto.Email);
 
-        var result =
-            HashingHelper.VerifyPasswordHash(request.UserForLoginDto.Password, user.PasswordHash, user.PasswordSalt);
+        _businessRules.DeveloperShouldExistWhenRequested(developer);
 
-        if (!result)
-            throw new Exception("Wrong Credentials");
+        _businessRules.DeveloperCredentialsShouldMatch(request.UserForLoginDto.Password, developer!.PasswordHash, developer.PasswordSalt);
 
-        AccessToken accessToken = _tokenHelper.CreateToken(user, new List<OperationClaim>());
+        AccessToken accessToken = _tokenHelper.CreateToken(developer, new List<OperationClaim>());
 
-        return new AccessTokenDto() { AccessToken = accessToken };
+        AccessTokenDto accessTokenDto = _mapper.Map<AccessTokenDto>(accessToken);
+        return accessTokenDto;
     }
 }

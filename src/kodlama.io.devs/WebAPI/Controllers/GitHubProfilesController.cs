@@ -4,8 +4,10 @@ using Application.Features.GitHubProfiles.Commands.DeleteGitHubProfile;
 using Application.Features.GitHubProfiles.Commands.UpdateGitHubProfile;
 using Application.Features.GitHubProfiles.Dtos;
 using Application.Features.GitHubProfiles.Models;
+using Application.Features.GitHubProfiles.Queries.GetByIdGitHubProfile;
 using Application.Features.GitHubProfiles.Queries.GetListGitHubProfile;
 using Core.Application.Requests;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -24,6 +26,13 @@ public class GitHubProfilesController : BaseController
     {
         GetListGitHubProfileQuery query = new(pageRequest);
         GitHubProfileListModel result = await Mediator!.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("{Id}")]
+    public async Task<IActionResult> GetById([FromRoute] GetByIdGitHubProfileQuery query)
+    {
+        GitHubProfileGetByIdDto result = await Mediator!.Send(query);
         return Ok(result);
     }
 

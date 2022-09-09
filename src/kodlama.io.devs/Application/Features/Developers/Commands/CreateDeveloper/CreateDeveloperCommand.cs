@@ -1,4 +1,5 @@
-﻿using Application.Features.Users.Dtos;
+﻿using Application.Features.Developers.Dtos;
+using Application.Features.Developers.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Security.Dtos;
@@ -16,35 +17,34 @@ public record CreateDeveloperCommand(UserForRegisterDto UserForRegisterDto) : IR
 public class CreateDeveloperCommandHandler : IRequestHandler<CreateDeveloperCommand, AccessTokenDto>
 {
     private readonly IDeveloperRepository _repository;
-    private readonly IMapper _mapper;
     private readonly ITokenHelper _tokenHelper;
+    private readonly DeveloperBusinessRules _businessRules;
+    private readonly IMapper _mapper;
 
-    public CreateDeveloperCommandHandler(IDeveloperRepository repository, IMapper mapper, ITokenHelper tokenHelper)
+    public CreateDeveloperCommandHandler(IDeveloperRepository repository, ITokenHelper tokenHelper,
+        DeveloperBusinessRules businessRules, IMapper mapper)
     {
         _repository = repository;
-        _mapper = mapper;
         _tokenHelper = tokenHelper;
+        _businessRules = businessRules;
+        _mapper = mapper;
     }
 
     public async Task<AccessTokenDto> Handle(CreateDeveloperCommand request, CancellationToken cancellationToken)
     {
+        await _businessRules.DeveloperEmailCanNotBeDuplicatedWhenInserted(request.UserForRegisterDto.Email);
+
         HashingHelper.CreatePasswordHash(request.UserForRegisterDto.Password, out var passwordHash, out var passwordSalt);
 
-        var developer = new Developer
-        {
-            FirstName = request.UserForRegisterDto.FirstName,
-            LastName = request.UserForRegisterDto.LastName,
-            Email = request.UserForRegisterDto.Email,
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt,
-            AuthenticatorType = AuthenticatorType.Email,
-            Status = true
-        };
+        Developer developer = _mapper.Map<Developer>(request);
+        developer.PasswordHash = passwordHash;
+        developer.PasswordSalt = passwordSalt;
 
-        User createdUser = await _repository.AddAsync(developer);
+        User createdDeveloper = await _repository.AddAsync(developer);
 
         AccessToken accessToken = _tokenHelper.CreateToken(developer, new List<OperationClaim>());
-
-        return new AccessTokenDto() { AccessToken = accessToken };
+        
+        AccessTokenDto accessTokenDto = _mapper.Map<AccessTokenDto>(accessToken);
+        return accessTokenDto;
     }
 }

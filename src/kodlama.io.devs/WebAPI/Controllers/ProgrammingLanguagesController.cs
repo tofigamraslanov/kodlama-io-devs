@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProgrammingLanguageCommand command)
         {
-            CreatedProgrammingLanguageDto result = await Mediator?.Send(command)!;
+            CreatedProgrammingLanguageDto result = await Mediator!.Send(command);
             return Created("", result);
         }
 
@@ -23,28 +23,28 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
         {
             GetListProgrammingLanguageQuery query = new(pageRequest);
-            ProgrammingLanguageListModel result = await Mediator?.Send(query)!;
+            ProgrammingLanguageListModel result = await Mediator!.Send(query);
             return Ok(result);
         }
 
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetById([FromRoute] GetByIdProgrammingLanguageQuery query)
         {
-            ProgrammingLanguageGetByIdDto result = await Mediator?.Send(query)!;
+            ProgrammingLanguageGetByIdDto result = await Mediator!.Send(query);
             return Ok(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateProgrammingLanguageCommand command)
         {
-            UpdatedProgrammingLanguageDto result = await Mediator?.Send(command)!;
+            UpdatedProgrammingLanguageDto result = await Mediator!.Send(command);
             return Ok(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] DeleteProgrammingLanguageCommand command)
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> Delete([FromRoute] DeleteProgrammingLanguageCommand command)
         {
-            DeletedProgrammingLanguageDto result = await Mediator?.Send(command)!;
+            DeletedProgrammingLanguageDto result = await Mediator!.Send(command);
             return Ok(result);
         }
     }

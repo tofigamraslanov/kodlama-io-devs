@@ -20,5 +20,7 @@ public class MappingProfiles : Profile
 
         CreateMap<IPaginate<GitHubProfile>, GitHubProfileListModel>().ReverseMap();
         CreateMap<GitHubProfile, GitHubProfileListDto>().ReverseMap();
+
+        CreateMap<GitHubProfile, GitHubProfileGetByIdDto>().ReverseMap();
     }
 }
