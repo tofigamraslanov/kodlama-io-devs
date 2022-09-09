@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
+using Application.Features.Developers.Rules;
+using Application.Features.GitHubProfiles.Rules;
 using Application.Features.ProgrammingLanguages.Rules;
+using Application.Features.Technologies.Rules;
 using Core.Application.Pipelines.Validation;
 using FluentValidation;
 using MediatR;
@@ -15,6 +18,9 @@ public static class ServiceRegistration
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         services.AddScoped<ProgrammingLanguageBusinessRules>();
+        services.AddScoped<TechnologyBusinessRules>();
+        services.AddScoped<GitHubProfileBusinessRules>();
+        services.AddScoped<DeveloperBusinessRules>();
 
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
