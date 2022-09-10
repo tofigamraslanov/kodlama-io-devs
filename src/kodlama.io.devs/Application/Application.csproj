@@ -9,8 +9,6 @@
     <ItemGroup>
       <Folder Include="Features\GitHubProfiles\Commands\DeleteGitHubProfile\" />
       <Folder Include="Features\GitHubProfiles\Commands\UpdateGitHubProfile\" />
-      <Folder Include="Features\GitHubProfiles\Models" />
-      <Folder Include="Features\GitHubProfiles\Queries\GetListGitHubProfile\" />
       <Folder Include="Features\ProgrammingLanguages\Commands\DeleteProgrammingLanguage\" />
       <Folder Include="Features\ProgrammingLanguages\Commands\UpdateProgrammingLanguage\" />
       <Folder Include="Features\ProgrammingLanguages\Models" />
@@ -36,6 +34,12 @@
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.0" />
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Http">
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.8\Microsoft.Extensions.Http.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

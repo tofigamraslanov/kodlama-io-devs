@@ -17,7 +17,6 @@ public class BaseDbContext : DbContext
 
     public DbSet<ProgrammingLanguage> ProgrammingLanguages { get; set; } = null!;
     public DbSet<Technology> Technologies { get; set; } = null!;
-    public DbSet<Developer> Developers { get; set; } = null!;
     public DbSet<GitHubProfile> GitHubProfiles { get; set; } = null!;
 
     public DbSet<User> Users { get; set; } = null!;
@@ -25,16 +24,10 @@ public class BaseDbContext : DbContext
     public DbSet<UserOperationClaim> UserOperationClaims { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        // if(!optionsBuilder.IsConfigured)
-        //     base.OnConfiguring(optionsBuilder.UseSqlServer(Configuration.GetConnectionString("ProgrammingLanguageConnectionString")));
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        
+
         ProgrammingLanguage[] programmingLanguageSeeds =
         {
             new(1, "C#"),
@@ -49,5 +42,12 @@ public class BaseDbContext : DbContext
             new(3, 2, "Spring")
         };
         modelBuilder.Entity<Technology>().HasData(technologySeeds);
+
+        OperationClaim[] operationClaimSeeds =
+        {
+            new(1, "Admin"),
+            new(2, "User")
+        };
+        modelBuilder.Entity<OperationClaim>().HasData(operationClaimSeeds);
     }
 }

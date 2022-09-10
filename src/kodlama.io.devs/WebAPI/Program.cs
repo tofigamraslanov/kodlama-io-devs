@@ -9,12 +9,14 @@ using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddApplicationServices();
+builder.Services.AddPersistenceServices(builder.Configuration);
 
 builder.Services.AddSecurityServices();
 
-builder.Services.AddApplicationServices();
-builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 TokenOptions? tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -24,21 +26,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
         ValidIssuer = tokenOptions.Issuer,
         ValidAudience = tokenOptions.Audience,
-        ValidateIssuerSigningKey = true,
         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey),
-        ClockSkew = TimeSpan.Zero
+        LifetimeValidator = (before, expires, token, parameters) => expires != null && expires > DateTime.UtcNow
     };
 });
 
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient("GitHubUserProfile", config =>
+{
+    config.BaseAddress = new Uri("https://api.github.com/users/");
+    config.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -48,6 +51,8 @@ if (app.Environment.IsDevelopment())
 app.ConfigureCustomExceptionMiddleware();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

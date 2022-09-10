@@ -2,7 +2,10 @@
 
 public class UpdatedGitHubProfileDto
 {
-    public int Id { get; set; }
-    public int DeveloperId { get; set; }
-    public string GitHubAddress { get; set; } = null!;
+    public string? HtmlUrl { get; set; }
+    public string Name { get; set; } = null!;
+    public ushort PublicRepos { get; set; }
+    public ushort PublicGists { get; set; }
+    public ushort Followers { get; set; }
+    public ushort Following { get; set; }
 }

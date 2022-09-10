@@ -6,6 +6,6 @@ public class CreateGitHubProfileCommandValidator : AbstractValidator<CreateGitHu
 {
     public CreateGitHubProfileCommandValidator()
     {
-        RuleFor(g => g.GitHubAddress).NotEmpty();
+        RuleFor(g => g.ProfileName).NotEmpty().WithMessage("You must enter a profile name");
     }
 }

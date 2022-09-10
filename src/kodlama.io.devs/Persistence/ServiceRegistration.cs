@@ -13,13 +13,13 @@ public static class ServiceRegistration
         IConfiguration configuration)
     {
         services.AddDbContext<BaseDbContext>(
-            options => options.UseSqlServer(configuration.GetConnectionString("ProgrammingLanguageConnectionString")));
+            options => options.UseSqlServer(configuration.GetConnectionString("KodlamaIoDevsConnectionString")));
 
         services.AddScoped<IProgrammingLanguageRepository, ProgrammingLanguageRepository>();
         services.AddScoped<ITechnologyRepository, TechnologyRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGitHubProfileRepository, GitHubProfileRepository>();
-        services.AddScoped<IDeveloperRepository, DeveloperRepository>();
+        services.AddScoped<IUserOperationClaimRepository, UserOperationClaimRepository>();
 
         return services;
     }

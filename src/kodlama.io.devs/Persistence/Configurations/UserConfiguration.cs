@@ -9,6 +9,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users").HasKey(k => k.Id);
+        
         builder.Property(p => p.Id).HasColumnName("Id");
         builder.Property(p => p.FirstName).HasColumnName("FirstName");
         builder.Property(p => p.LastName).HasColumnName("LastName");
@@ -17,6 +18,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(p => p.PasswordSalt).HasColumnName("PasswordSalt");
         builder.Property(p => p.Status).HasColumnName("Status");
         builder.Property(p => p.AuthenticatorType).HasColumnName("AuthenticatorType");
+        
         builder.HasMany(p => p.UserOperationClaims);
         builder.HasMany(p => p.RefreshTokens);
     }

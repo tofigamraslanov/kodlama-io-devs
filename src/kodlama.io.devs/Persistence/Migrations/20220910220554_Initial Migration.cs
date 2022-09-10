@@ -75,19 +75,31 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Developers",
+                name: "GitHubProfiles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Login = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HtmlUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Company = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Blog = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicRepos = table.Column<int>(type: "int", nullable: false),
+                    Followers = table.Column<int>(type: "int", nullable: false),
+                    Following = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Developers", x => x.Id);
+                    table.PrimaryKey("PK_GitHubProfiles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Developers_Users_Id",
-                        column: x => x.Id,
+                        name: "FK_GitHubProfiles_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,35 +155,23 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "GitHubProfiles",
-                columns: table => new
+            migrationBuilder.InsertData(
+                table: "OperationClaims",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DeveloperId = table.Column<int>(type: "int", nullable: false),
-                    GitHubAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GitHubProfiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GitHubProfiles_Developers_DeveloperId",
-                        column: x => x.DeveloperId,
-                        principalTable: "Developers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    { 1, "Admin" },
+                    { 2, "User" }
                 });
 
             migrationBuilder.InsertData(
                 table: "ProgrammingLanguages",
                 columns: new[] { "Id", "Name" },
-                values: new object[] { 1, "C#" });
-
-            migrationBuilder.InsertData(
-                table: "ProgrammingLanguages",
-                columns: new[] { "Id", "Name" },
-                values: new object[] { 2, "Java" });
+                values: new object[,]
+                {
+                    { 1, "C#" },
+                    { 2, "Java" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Technologies",
@@ -189,9 +189,9 @@ namespace Persistence.Migrations
                 values: new object[] { 3, "Spring", 2 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GitHubProfiles_DeveloperId",
+                name: "IX_GitHubProfiles_UserId",
                 table: "GitHubProfiles",
-                column: "DeveloperId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
@@ -227,9 +227,6 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserOperationClaims");
-
-            migrationBuilder.DropTable(
-                name: "Developers");
 
             migrationBuilder.DropTable(
                 name: "ProgrammingLanguages");

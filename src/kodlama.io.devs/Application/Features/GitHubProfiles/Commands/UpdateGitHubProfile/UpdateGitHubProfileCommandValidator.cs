@@ -6,6 +6,6 @@ public class UpdateGitHubProfileCommandValidator : AbstractValidator<UpdateGitHu
 {
     public UpdateGitHubProfileCommandValidator()
     {
-        RuleFor(g => g.GitHubAddress).NotEmpty();
+        //RuleFor(g => g.ProfileName).NotEmpty();
     }
 }
