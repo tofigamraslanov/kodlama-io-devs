@@ -7,6 +7,7 @@ using Application.Features.Technologies.Queries.GetByIdTechnology;
 using Application.Features.Technologies.Queries.GetListTechnology;
 using Core.Application.Requests;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Controllers.Common;
 
 namespace WebAPI.Controllers
 {

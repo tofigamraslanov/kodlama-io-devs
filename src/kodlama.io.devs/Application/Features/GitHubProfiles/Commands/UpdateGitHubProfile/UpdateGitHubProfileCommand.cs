@@ -40,7 +40,7 @@ public class UpdateGitHubProfileCommandHandler : IRequestHandler<UpdateGitHubPro
 
         GitHubProfile mappedGitHubProfile = _mapper.Map<GitHubProfile>(receivedGithubProfileDto);
         mappedGitHubProfile.Id = gitHubProfile.Id;
-        mappedGitHubProfile!.UserId = gitHubProfile.UserId;
+        mappedGitHubProfile.UserId = gitHubProfile.UserId;
 
         GitHubProfile updatedGitHubProfile = await _repository.UpdateAsync(mappedGitHubProfile);
 

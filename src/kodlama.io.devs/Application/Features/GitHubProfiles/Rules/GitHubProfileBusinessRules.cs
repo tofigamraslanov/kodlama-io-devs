@@ -49,12 +49,6 @@ public class GitHubProfileBusinessRules
         return gitHubProfile;
     }
 
-    public void GitHubProfileShouldExistWhenRequested(GitHubProfile? gitHubProfile)
-    {
-        if (gitHubProfile is null)
-            throw new BusinessException("Requested GitHub profile does not exist");
-    }
-
     public void UserMustVerifiedBeforeProfileDeletedOrUpdated(int id)
     {
         var idFromToken = _httpContextAccessor.HttpContext.User.GetUserId();

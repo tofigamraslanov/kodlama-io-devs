@@ -1,44 +1,23 @@
 using Application;
 using Core.CrossCuttingConcerns.Exceptions;
 using Core.Security;
-using Core.Security.Encryption;
-using Core.Security.JWT;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Persistence;
+using WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 builder.Services.AddApplicationServices();
-builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddPersistenceServices(configuration);
 
 builder.Services.AddSecurityServices();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-TokenOptions? tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = tokenOptions.Issuer,
-        ValidAudience = tokenOptions.Audience,
-        IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey),
-        LifetimeValidator = (before, expires, token, parameters) => expires != null && expires > DateTime.UtcNow
-    };
-});
-
-builder.Services.AddHttpClient("GitHubUserProfile", config =>
-{
-    config.BaseAddress = new Uri("https://api.github.com/users/");
-    config.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
-});
+builder.Services.AddCustomSwaggerGen();
+builder.Services.AddJwtBearerAuthentication(configuration);
+builder.Services.AddCustomHttpClient();
 
 var app = builder.Build();
 

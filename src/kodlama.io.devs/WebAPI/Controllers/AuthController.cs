@@ -1,6 +1,7 @@
 ﻿using Application.Features.Users.Commands.LoginUser;
 using Application.Features.Users.Commands.RegisterUser;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Controllers.Common;
 
 namespace WebAPI.Controllers
 {

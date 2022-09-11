@@ -9,13 +9,12 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<CreateGitHubProfileCommand, GitHubProfile>().ReverseMap();
+        CreateMap<ReceivedGithubProfileDto, GitHubProfile>().ReverseMap();
+
         CreateMap<GitHubProfile, CreatedGitHubProfileDto>().ReverseMap();
 
         CreateMap<GitHubProfile, UpdatedGitHubProfileDto>().ReverseMap();
 
         CreateMap<GitHubProfile, DeletedGitHubProfileDto>().ReverseMap();
-
-        CreateMap<ReceivedGithubProfileDto, GitHubProfile>().ReverseMap();
     }
 }

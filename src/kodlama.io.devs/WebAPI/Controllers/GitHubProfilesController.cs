@@ -2,8 +2,8 @@
 using Application.Features.GitHubProfiles.Commands.DeleteGitHubProfile;
 using Application.Features.GitHubProfiles.Commands.UpdateGitHubProfile;
 using Application.Features.GitHubProfiles.Dtos;
-using Core.Security.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Controllers.Common;
 
 namespace WebAPI.Controllers;
 
